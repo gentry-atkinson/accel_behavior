@@ -10,7 +10,7 @@ import keras.backend as K
 from keras.layers import Conv2DTranspose, Lambda, BatchNormalization
 
 DIRECTORIES = ["dws_1", "dws_2", "dws_11", "jog_9", "jog_16", "sit_5", "sit_13", "std_6", "std_14", "ups_3", "ups_4", "ups_12", "wlk_7", "wlk_8", "wlk_15"]
-NUMBER_EPOCHS = 2
+NUMBER_EPOCHS = 5
 
 
 
@@ -33,21 +33,22 @@ def build_AE(train_set):
     inp = Input(train_set[0].shape)
 
     print("Building encoder.......................")
-    enc = Reshape((12, 512))(inp)
+    enc = Reshape((370, 12))(inp)
     enc = Conv1D(filters=256, kernel_size=16, strides=8, activation='linear', padding='same')(enc)
-    enc = MaxPooling1D(pool_size=4, padding='same')(enc)
+    enc = MaxPooling1D(pool_size=8, padding='same')(enc)
     enc = Flatten()(enc)
     hidden = Dense(128, use_bias=True, activation='sigmoid')(enc)
 
     print("Building decoder......................")
     dec = hidden
-    #dec = Dense(64, activation='relu')(dec)
-    dec = Reshape((12, 128))(dec)
-    dec = Conv1DTranspose(dec, filters=512, kernel_size=8, padding='same')
+    dec = Dense(3072, activation='sigmoid')(dec)
+    #print(dec.shape)
+    dec = Reshape((256, 12))(dec)
+    dec = Conv1DTranspose(dec, filters=370, kernel_size=8, padding='same')
     #dec = UpSampling1D(size=512)(dec)
-    dec = MaxPooling1D(pool_size=4, padding='same')(dec)
+    dec = MaxPooling1D(pool_size=44, padding='same')(dec)
+    dec = Reshape((370, 12))(dec)
     #dec = BatchNormalization()(dec)
-    dec = Flatten()(dec)
 
     print("Compiling model.......................")
     autoenc = Model(inp, dec)
@@ -94,9 +95,60 @@ def read_files():
                 print("Bad directory name in read_files()")
         directory_num += 24
 
+    train_data = np.zeros((288, 370, 12), dtype='float')
+    train_labels = np.zeros((288), dtype='int')
+    test_data = np.zeros((72, 370, 12), dtype='float')
+    test_labels = np.zeros((72), dtype='int')
+
+    test_counter = 0;
+    train_counter = 0;
+
+    for i in range(360):
+        for j in range(370):
+            for k in range(12):
+                if i%5 == 4:
+                    test_data[test_counter][j][k] = all_data[i][j][k]
+                    test_labels[test_counter] = all_labels[i]
+                else:
+                    train_data[test_counter][j][k] = all_data[i][j][k]
+                    train_labels[train_counter] = all_labels[i]
+        if i%5 == 4:
+            test_counter += 1
+        else:
+            train_counter += 1
+
+    print(test_counter, " test samples recorded")
+    print(train_counter, " train counters recorded")
+    return train_data, train_labels, test_data, test_labels
+
+def train_AE(autoenc, train_set):
+    print("-----------------Training Autoencoder-----------------")
+    print("Passed " + str(len(train_set)) + " segments.")
+    print("Segments have length " + str(len(train_set[0])))
+
+    autoenc.fit(train_set, train_set, epochs=NUMBER_EPOCHS)
+    return autoenc
+
+def test_AE(model, test_set):
+    print("----------------Testing AutoEncoder------------------")
+    accuracy = model.evaluate(test_set, test_set, verbose=1)
+    print("Loss & accuracy: ", accuracy)
+
+def trim_decoder(autoenc):
+    print("Removing decoder from autoencoder....")
+    o = autoenc.layers[-7].output
+    encoder = Model(input=autoenc.input, output=[o])
+    encoder.summary()
+    return encoder
+
+
 
 def main():
-    read_files()
+    train_data, train_labels, test_data, test_labels = read_files()
+    autoenc = build_AE(train_data)
+    autoenc = train_AE(autoenc, train_data)
+    test_AE(autoenc, test_data)
+
 
 if __name__ == "__main__":
     main()
