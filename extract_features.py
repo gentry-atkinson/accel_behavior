@@ -1,3 +1,13 @@
+#### TODO:
+#       1)only take raw accel input
+#       2)visualize decoded dataset
+
+##############################################
+#Author:    Gentry Atkinson
+#Org:       Texas State University
+#Date:      6 November 2019
+##############################################
+
 import keras
 from matplotlib import pyplot
 import numpy as np
