@@ -7,7 +7,7 @@ from keras.models import Model
 from keras.optimizers import RMSprop
 
 import keras.backend as K
-from keras.layers import Conv2DTranspose, Lambda, BatchNormalizationl
+from keras.layers import Conv2DTranspose, Lambda, BatchNormalization
 
 DIRECTORIES = ["dws_1", "dws_2", "dws_11", "jog_9", "jog_16", "sit_5", "sit_13", "std_6", "std_14", "ups_3", "ups_4", "ups_12", "wlk_7", "wlk_8", "wlk_15"]
 NUMBER_EPOCHS = 2
@@ -58,57 +58,14 @@ def build_AE(train_set):
 
 
 def read_files():
-    for i in range(FILES_PER_SET):
-        a_name = "SET A/Z" + format(i+1, '03d') + ".txt"
-        b_name = "SET B/O" + format(i+1, '03d') + ".txt"
-        c_name = "SET C/N" + format(i+1, '03d') + ".TXT"
-        d_name = "SET D/F" + format(i+1, '03d') + ".txt"
-        e_name = "SET E/S" + format(i+1, '03d') + ".txt"
+    for directory in DIRECTORIES:
+        filepath = "motionsense-dataset/" + directory + "/"
+        for i in range (1, 25):
+            filename = filepath + "sub_" + str(i) +".csv"
+            print(filename)
 
-        a_file = open(a_name, "r")
-        b_file = open(b_name, "r")
-        c_file = open(c_name, "r")
-        d_file = open(d_name, "r")
-        e_file = open(e_name, "r")
+def main():
+    read_files()
 
-        a_lines = a_file.readlines()
-        b_lines = b_file.readlines()
-        c_lines = c_file.readlines()
-        d_lines = d_file.readlines()
-        e_lines = e_file.readlines()
-
-        j = 0;
-
-        for a_val in a_lines:
-            A[i, j] = int(a_val)
-            j += 1
-
-        j = 0;
-
-        for b_val in b_lines:
-            B[i, j] = int(b_val)
-            j += 1
-
-        j = 0;
-
-        for c_val in c_lines:
-            C[i, j] = int(c_val)
-            j += 1
-
-        j = 0;
-
-        for d_val in d_lines:
-            D[i, j] = int(d_val)
-            j += 1
-
-        j = 0;
-
-        for e_val in e_lines:
-            E[i, j] = int(e_val)
-            j += 1
-
-    print("A[0,0] " + str(A[0,0]))
-    print("B[0,0] " + str(B[0,0]))
-    print("C[0,0] " + str(C[0,0]))
-    print("D[0,0] " + str(D[0,0]))
-    print("E[0,0] " + str(E[0,0]))
+if __name__ == "__main__":
+    main()
