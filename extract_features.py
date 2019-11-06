@@ -136,10 +136,28 @@ def test_AE(model, test_set):
 
 def trim_decoder(autoenc):
     print("Removing decoder from autoencoder....")
-    o = autoenc.layers[-7].output
+    o = autoenc.layers[-8].output
     encoder = Model(input=autoenc.input, output=[o])
     encoder.summary()
     return encoder
+
+def write_features(train_file, test_file, encoder, train_set, test_set):
+    print("Writing features to " + train_file)
+    features = encoder.predict_on_batch(train_set)
+    print("Writing ", len(features), " features of size ", len(features[0]))
+    np.savetxt(train_file, features, delimiter=',')
+
+    print("Writing features to " + test_file)
+    features = encoder.predict_on_batch(test_set)
+    print("Writing ", len(features), " features of size ", len(features[0]))
+    np.savetxt(test_file, features, delimiter=',')
+
+def write_labels(train_labels, test_labels, train_label_set, test_label_set):
+    print("Writilng labels to " + train_labels)
+    np.savetxt(train_labels, train_label_set)
+
+    print("Writilng labels to " + test_labels)
+    np.savetxt(test_labels, test_label_set)
 
 
 
@@ -148,6 +166,10 @@ def main():
     autoenc = build_AE(train_data)
     autoenc = train_AE(autoenc, train_data)
     test_AE(autoenc, test_data)
+    encoder = trim_decoder(autoenc)
+
+    write_features("training_data.csv", "testing_data.csv", encoder, train_data, test_data)
+    write_labels("training_labels.csv", "testing_labels.csv", train_labels, test_labels)
 
 
 if __name__ == "__main__":
