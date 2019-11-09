@@ -131,6 +131,13 @@ def read_files():
     print(train_counter, " train counters recorded")
     return train_data, train_labels, test_data, test_labels
 
+def read_files_1d():
+    train_data = np.loadtxt("raw_train_data_1d", delimiter=,'')
+    train_labels = np.loadtxt("raw_train_labels_1d", delimiter=,'')
+    test_data = np.loadtxt("raw_test_data_1d", delimiter=,'')
+    test_labels = np.loadtxt("raw_test_labels_1d", delimiter=,'')
+    return train_data, train_labels, test_data, test_labels
+
 def train_AE(autoenc, train_set):
     print("-----------------Training Autoencoder-----------------")
     print("Passed " + str(len(train_set)) + " segments.")
@@ -172,7 +179,7 @@ def write_labels(train_labels, test_labels, train_label_set, test_label_set):
 
 
 def main():
-    train_data, train_labels, test_data, test_labels = read_files()
+    train_data, train_labels, test_data, test_labels = read_files_1d()
     autoenc = build_AE(train_data)
     autoenc = train_AE(autoenc, train_data)
     test_AE(autoenc, test_data)
