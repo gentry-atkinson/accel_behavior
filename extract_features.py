@@ -43,7 +43,7 @@ def build_AE(train_set):
     inp = Input(train_set[0].shape)
 
     print("Building encoder.......................")
-    enc = Reshape((370, 12))(inp)
+    enc = Reshape((370, 1))(inp)
     enc = Conv1D(filters=256, kernel_size=16, strides=8, activation='linear', padding='same')(enc)
     enc = MaxPooling1D(pool_size=8, padding='same')(enc)
     enc = Flatten()(enc)
@@ -51,13 +51,14 @@ def build_AE(train_set):
 
     print("Building decoder......................")
     dec = hidden
-    dec = Dense(3072, activation='sigmoid')(dec)
+    dec = Dense(256, activation='sigmoid')(dec)
     #print(dec.shape)
-    dec = Reshape((256, 12))(dec)
+    dec = Reshape((256, 1))(dec)
     dec = Conv1DTranspose(dec, filters=370, kernel_size=8, padding='same')
     #dec = UpSampling1D(size=512)(dec)
-    dec = MaxPooling1D(pool_size=44, padding='same')(dec)
-    dec = Reshape((370, 12))(dec)
+    dec = MaxPooling1D(pool_size=512, padding='same')(dec)
+    dec = Reshape((370, 1))(dec)
+    dec = Flatten()(dec)
     #dec = BatchNormalization()(dec)
 
     print("Compiling model.......................")
@@ -132,10 +133,10 @@ def read_files():
     return train_data, train_labels, test_data, test_labels
 
 def read_files_1d():
-    train_data = np.loadtxt("raw_train_data_1d", delimiter=,'')
-    train_labels = np.loadtxt("raw_train_labels_1d", delimiter=,'')
-    test_data = np.loadtxt("raw_test_data_1d", delimiter=,'')
-    test_labels = np.loadtxt("raw_test_labels_1d", delimiter=,'')
+    train_data = np.loadtxt("raw_train_data_1d.csv", delimiter=',')
+    train_labels = np.loadtxt("raw_train_labels_1d.csv", delimiter=',')
+    test_data = np.loadtxt("raw_test_data_1d.csv", delimiter=',')
+    test_labels = np.loadtxt("raw_test_labels_1d.csv", delimiter=',')
     return train_data, train_labels, test_data, test_labels
 
 def train_AE(autoenc, train_set):
@@ -153,7 +154,7 @@ def test_AE(model, test_set):
 
 def trim_decoder(autoenc):
     print("Removing decoder from autoencoder....")
-    o = autoenc.layers[-8].output
+    o = autoenc.layers[-9].output
     encoder = Model(input=autoenc.input, output=[o])
     encoder.summary()
     return encoder
