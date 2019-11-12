@@ -177,12 +177,17 @@ def write_labels(train_labels, test_labels, train_label_set, test_label_set):
     print("Writilng labels to " + test_labels)
     np.savetxt(test_labels, test_label_set)
 
+def write_decoded_data(autoenc, train_data):
+    print("Writing decoded values as CSV")
+    decoded_data = autoenc.predict_on_batch(train_data)
+    np.savetxt("decoded_data.csv", decoded_data)
 
 
 def main():
     train_data, train_labels, test_data, test_labels = read_files_1d()
     autoenc = build_AE(train_data)
     autoenc = train_AE(autoenc, train_data)
+    write_decoded_data(autoenc, train_data)
     test_AE(autoenc, test_data)
     encoder = trim_decoder(autoenc)
 
