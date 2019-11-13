@@ -27,7 +27,7 @@ NUMBER_EPOCHS = 10
 def Conv1DTranspose(input_tensor, filters, kernel_size, strides=2, padding='same'):
     #https://stackoverflow.com/questions/44061208/how-to-implement-the-conv1dtranspose-in-keras
     x = Lambda(lambda x: K.expand_dims(x, axis=2))(input_tensor)
-    x = Conv2DTranspose(filters=filters, kernel_size=(kernel_size, 1), strides=(strides, 1),activation='linear', padding=padding, use_bias='true')(x)
+    x = Conv2DTranspose(filters=filters, kernel_size=(kernel_size, 1), strides=(strides, 1),activation='linear', padding=padding, use_bias=True)(x)
     x = Lambda(lambda x: K.squeeze(x, axis=2))(x)
     return x
 
@@ -44,7 +44,7 @@ def build_AE(train_set):
 
     print("Building encoder.......................")
     enc = Reshape((370, 1))(inp)
-    enc = Conv1D(filters=256, kernel_size=16, strides=8, activation='linear', padding='same', use_bias='true')(enc)
+    enc = Conv1D(filters=256, kernel_size=16, strides=8, activation='linear', padding='same', use_bias=True)(enc)
     enc = MaxPooling1D(pool_size=8, padding='same')(enc)
     enc = Flatten()(enc)
     hidden = Dense(128, use_bias=True, activation='sigmoid')(enc)
