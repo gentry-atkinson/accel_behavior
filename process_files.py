@@ -20,12 +20,14 @@ for directory in DIRECTORIES:
     for i in range (1, 25):
         #print("Subject: ", i, " has offset ", directory_num, ". Index is ", i+directory_num-1)
         filename = filepath + "sub_" + str(i) +".csv"
+        #print(filename)
         f = open(filename, 'r')
         f_lines = f.readlines()
         for j in range(1, 371):
             values = f_lines[j].split(',')
             for k in range(1, 13):
                 all_data[i+directory_num-1][j-1][k-1] = values[k]
+                #print(all_data[i+directory_num-1][j-1][k-1])
         if "dws" in directory:
             all_labels[i+directory_num-1] = 0
         elif "jog" in directory:
@@ -52,12 +54,15 @@ train_counter = 0;
 
 for i in range(360):
     for j in range(370):
+        print ("line ", i, " value ", j)
         if i%5 == 4:
             test_data[test_counter][j] = resultant_vector(all_data[i][j][9], all_data[i][j][10], all_data[i][j][11])
             test_labels[test_counter] = all_labels[i]
+            print("test", test_data[test_counter][j])
         else:
-            train_data[test_counter][j] = resultant_vector(all_data[i][j][9], all_data[i][j][10], all_data[i][j][11])
+            train_data[train_counter][j] = resultant_vector(all_data[i][j][9], all_data[i][j][10], all_data[i][j][11])
             train_labels[train_counter] = all_labels[i]
+            print("train", train_data[train_counter][j])
     if i%5 == 4:
         test_counter += 1
     else:
@@ -66,6 +71,7 @@ for i in range(360):
 print(test_counter, " test samples recorded")
 print(train_counter, " train counters recorded")
 print(len(train_data[0]), " samples per segment")
+print("train_data[287][369]", train_data[287][369])
 
 np.savetxt("raw_train_data_1d.csv", train_data, delimiter=',')
 np.savetxt("raw_train_labels_1d.csv", train_labels, delimiter=',')
