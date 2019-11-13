@@ -63,7 +63,7 @@ def build_AE(train_set):
 
     print("Compiling model.......................")
     autoenc = Model(inp, dec)
-    autoenc.compile(optimizer='RMSProp', loss='mean_squared_error', metrics=['acc'])
+    autoenc.compile(optimizer='RMSProp', loss='huber_loss', metrics=['acc'])
 
     autoenc.summary()
     return autoenc

@@ -10,6 +10,9 @@ end
 label_counts = [58, 58, 58, 58, 58, 58; 38, 38, 38, 38, 38, 38; 39, 39, 39, 39, 39, 39; 38, 38, 38, 38, 38, 38; 58, 58, 58, 58, 58, 58; 57, 57, 57, 57, 57, 57];
 cluster_percentages = cluster_matrix ./ label_counts;
 
+range = 1:1:370;
+plot(range, rawtraindata1d(288, :), range, decodeddata(288, :));
+
 %Label 1: Downstairs, 58 samples
 %Label 2: Jog, 38 samples
 %Label 3: Sit, 39 samples
