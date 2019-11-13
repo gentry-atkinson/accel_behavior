@@ -54,15 +54,15 @@ train_counter = 0;
 
 for i in range(360):
     for j in range(370):
-        print ("line ", i, " value ", j)
+        #print ("line ", i, " value ", j)
         if i%5 == 4:
             test_data[test_counter][j] = resultant_vector(all_data[i][j][9], all_data[i][j][10], all_data[i][j][11])
             test_labels[test_counter] = all_labels[i]
-            print("test", test_data[test_counter][j])
+            #print("test", test_data[test_counter][j])
         else:
             train_data[train_counter][j] = resultant_vector(all_data[i][j][9], all_data[i][j][10], all_data[i][j][11])
             train_labels[train_counter] = all_labels[i]
-            print("train", train_data[train_counter][j])
+            #print("train", train_data[train_counter][j])
     if i%5 == 4:
         test_counter += 1
     else:
