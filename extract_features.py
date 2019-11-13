@@ -20,7 +20,7 @@ import keras.backend as K
 from keras.layers import Conv2DTranspose, Lambda, BatchNormalization
 
 DIRECTORIES = ["dws_1", "dws_2", "dws_11", "jog_9", "jog_16", "sit_5", "sit_13", "std_6", "std_14", "ups_3", "ups_4", "ups_12", "wlk_7", "wlk_8", "wlk_15"]
-NUMBER_EPOCHS = 5
+NUMBER_EPOCHS = 10
 
 
 
