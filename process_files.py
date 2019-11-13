@@ -29,17 +29,17 @@ for directory in DIRECTORIES:
                 all_data[i+directory_num-1][j-1][k-1] = values[k]
                 #print(all_data[i+directory_num-1][j-1][k-1])
         if "dws" in directory:
-            all_labels[i+directory_num-1] = 0
-        elif "jog" in directory:
             all_labels[i+directory_num-1] = 1
-        elif "sit" in directory:
+        elif "jog" in directory:
             all_labels[i+directory_num-1] = 2
-        elif "std" in directory:
+        elif "sit" in directory:
             all_labels[i+directory_num-1] = 3
-        elif "ups" in directory:
+        elif "std" in directory:
             all_labels[i+directory_num-1] = 4
-        elif "wlk" in directory:
+        elif "ups" in directory:
             all_labels[i+directory_num-1] = 5
+        elif "wlk" in directory:
+            all_labels[i+directory_num-1] = 6
         else:
             print("Bad directory name in read_files()")
     directory_num += 24

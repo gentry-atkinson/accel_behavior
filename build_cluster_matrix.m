@@ -3,7 +3,7 @@ clusters = kmeans(trainingdata, 6);
 
 for i=1:288
     c = clusters(i);
-    l = rawtrainlabels1d(i)+1;
+    l = rawtrainlabels1d(i);
     cluster_matrix(l, c) =  cluster_matrix(l, c) + 1;
 end
 
