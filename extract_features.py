@@ -12,7 +12,7 @@ import keras
 from matplotlib import pyplot
 import numpy as np
 
-from keras.layers import Input, Conv1D, AveragePooling1D, MaxPooling1D, UpSampling1D, Dense, Reshape, Flatten
+from keras.layers import Input, Conv1D, GlobalMaxPooling1D, MaxPooling1D, UpSampling1D, Dense, Reshape, Flatten
 from keras.models import Model
 from keras.optimizers import RMSprop
 
@@ -45,22 +45,26 @@ def build_AE(train_set):
     print("Building encoder.......................")
     enc = Reshape((370, 1))(inp)
     enc = BatchNormalization(scale=False)(enc)
-    enc = Conv1D(filters=370, kernel_size=32, strides=1, activation='elu', padding='same', use_bias=True)(enc)
-    enc = MaxPooling1D(pool_size=512, padding='same')(enc)
-    enc = Flatten()(enc)
+    enc = Conv1D(filters=339, kernel_size=32, strides=1, activation='elu', padding='same', use_bias=True)(enc)
+    #enc = MaxPooling1D(pool_size=512, padding='same')(enc)
+    enc = GlobalMaxPooling1D()(enc)
+    #print(enc.shape)
+    #enc = Flatten()(enc)
     hidden = Dense(128, use_bias=True, activation='sigmoid')(enc)
 
     print("Building decoder......................")
     dec = hidden
-    dec = Dense(256, activation='sigmoid')(dec)
+    dec = Dense(128, activation='sigmoid')(dec)
     #print(dec.shape)
-    dec = Reshape((256, 1))(dec)
+    dec = Reshape((128, 1))(dec)
     dec = Conv1DTranspose(dec, filters=370, kernel_size=32, padding='same')
     #dec = UpSampling1D(size=512)(dec)
-    dec = MaxPooling1D(pool_size=512, padding='same')(dec)
-    dec = Reshape((370, 1))(dec)
+    #dec = MaxPooling1D(pool_size=512, padding='same')(dec)
+    dec = GlobalMaxPooling1D()(dec)
+    #print(dec.shape)
+    #dec = Reshape((370, 1))(dec)
     #dec = BatchNormalization(scale=True)(dec)
-    dec = Flatten()(dec)
+    #dec = Flatten()(dec)
 
     print("Compiling model.......................")
     autoenc = Model(inp, dec)
@@ -155,7 +159,7 @@ def test_AE(model, test_set):
 
 def trim_decoder(autoenc):
     print("Removing decoder from autoencoder....")
-    o = autoenc.layers[-9].output
+    o = autoenc.layers[-7].output
     encoder = Model(input=autoenc.input, output=[o])
     encoder.summary()
     return encoder
