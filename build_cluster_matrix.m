@@ -17,9 +17,9 @@ cluster_percentages = cluster_matrix ./ label_counts;
 
 range = 1:1:370;
 figure(1);
-plot(range, rawtraindata1d(3, :), range, decodeddata(288, :));
+plot(range, rawtraindata1d(59, :), range, decodeddata(288, :));
 figure(2);
-plot(range, rawtraindata1d(174, :), range, decodeddata(288, :));
+plot(range, rawtraindata1d(97, :), range, decodeddata(288, :));
 
 %Label 1: Downstairs, 58 samples
 %Label 2: Jog, 38 samples
