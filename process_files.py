@@ -1,5 +1,6 @@
 import numpy as np
 import math
+from sklearn.preprocessing import normalize
 
 DIRECTORIES = ["dws_1", "dws_2", "dws_11", "jog_9", "jog_16", "sit_5", "sit_13", "std_6", "std_14", "ups_3", "ups_4", "ups_12", "wlk_7", "wlk_8", "wlk_15"]
 
@@ -67,6 +68,9 @@ for i in range(360):
         test_counter += 1
     else:
         train_counter += 1
+
+train_data = normalize(train_data, norm='l2', copy=False)
+test_data = normalize(test_data, norm='l2', copy=False)
 
 print(test_counter, " test samples recorded")
 print(train_counter, " train counters recorded")
