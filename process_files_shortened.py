@@ -3,13 +3,45 @@ import math
 from sklearn.preprocessing import normalize
 
 DIRECTORIES = ["dws_1", "dws_2", "dws_11", "jog_9", "jog_16", "sit_5", "sit_13", "std_6", "std_14", "ups_3", "ups_4", "ups_12", "wlk_7", "wlk_8", "wlk_15"]
+array_size = 10000
+SAMPLE_LENGTH = 50
+num_samples = 0
 
 def resultant_vector(x_axis, y_axis, z_axis):
     return math.sqrt((x_axis * x_axis) + (y_axis * y_axis) + (z_axis * z_axis))
 
+def grow_data_array(all_data, array_size):
+    new_array_size = array_size * 2
+    new_array = np.zeros((new_array_size, SAMPLE_LENGTH, 3), dtype='float')
+    for i in range(array_size):
+        for j in range(SAMPLE_LENGTH):
+            for k in range(3):
+                new_array[i][j][k] = all_data[i][j][k]
+    return new_array, new_array_size
+
+def grow_label_array(all_labels, array_size):
+    new_array = np.zeros((array_size), dtype='int')
+    for i in range(len(all_labels)):
+        new_array[i] = all_labels[i]
+    return new_array
+
+def shrink_data_array(all_data, num_samples):
+    new_array = np.zeros((num_samples, SAMPLE_LENGTH, 3), dtype='float')
+    for i in range(num_samples):
+        for j in range(SAMPLE_LENGTH):
+            for k in range(3):
+                new_array[i][j][k] = all_data[i][j][k]
+    return new_array
+
+def shrink_label_array(all_labels, num_samples):
+    new_array = np.zeros((num_samples), dtype='int')
+    for i in range(num_samples):
+        new_array[i] = all_labels[i]
+    return new_array
+
 #splitting data 80/20 eventually
-all_data = np.zeros((360, 370, 12), dtype='float')
-all_labels = np.zeros((360), dtype='int')
+all_data = np.zeros((array_size, 50, 3), dtype='float')
+all_labels = np.zeros((array_size), dtype='int')
 
 directory_num = 0
 
@@ -24,44 +56,63 @@ for directory in DIRECTORIES:
         #print(filename)
         f = open(filename, 'r')
         f_lines = f.readlines()
-        for j in range(1, 371):
-            values = f_lines[j].split(',')
-            for k in range(1, 13):
-                all_data[i+directory_num-1][j-1][k-1] = values[k]
-                #print(all_data[i+directory_num-1][j-1][k-1])
-        if "dws" in directory:
-            all_labels[i+directory_num-1] = 1
-        elif "jog" in directory:
-            all_labels[i+directory_num-1] = 2
-        elif "sit" in directory:
-            all_labels[i+directory_num-1] = 3
-        elif "std" in directory:
-            all_labels[i+directory_num-1] = 4
-        elif "ups" in directory:
-            all_labels[i+directory_num-1] = 5
-        elif "wlk" in directory:
-            all_labels[i+directory_num-1] = 6
-        else:
-            print("Bad directory name in read_files()")
+        c = 0;
+        firstline = True
+        for line in f_lines:
+            if(firstline):
+                firstline = False
+                continue
+            values = line.split(',')
+            all_data[num_samples][c][0] = values[10]
+            all_data[num_samples][c][1] = values[11]
+            all_data[num_samples][c][2] = values[12]
+            c = c+1
+            if(c==SAMPLE_LENGTH-1):
+                c = 0
+                if "dws" in directory:
+                    all_labels[num_samples] = 1
+                elif "jog" in directory:
+                    all_labels[num_samples] = 2
+                elif "sit" in directory:
+                    all_labels[num_samples] = 3
+                elif "std" in directory:
+                    all_labels[num_samples] = 4
+                elif "ups" in directory:
+                    all_labels[num_samples] = 5
+                elif "wlk" in directory:
+                    all_labels[num_samples] = 6
+                else:
+                    print("Bad directory name in read_files()")
+                num_samples = num_samples + 1
+                if(num_samples == array_size):
+                    all_data, array_size = grow_data_array(all_data, array_size)
+                    all_labels = grow_label_array(all_labels, array_size)
     directory_num += 24
 
-train_data = np.zeros((288, 370), dtype='float')
-train_labels = np.zeros((288), dtype='int')
-test_data = np.zeros((72, 370), dtype='float')
-test_labels = np.zeros((72), dtype='int')
+all_data = shrink_data_array(all_data, num_samples)
+all_labels = shrink_label_array(all_labels, num_samples)
+
+import math
+num_train = math.ceil(0.8*num_samples)
+num_test = num_samples - num_train
+
+train_data = np.zeros((num_train, SAMPLE_LENGTH), dtype='float')
+train_labels = np.zeros((num_train), dtype='int')
+test_data = np.zeros((num_test, SAMPLE_LENGTH), dtype='float')
+test_labels = np.zeros((num_test), dtype='int')
 
 test_counter = 0;
 train_counter = 0;
 
-for i in range(360):
-    for j in range(370):
+for i in range(num_samples):
+    for j in range(SAMPLE_LENGTH):
         #print ("line ", i, " value ", j)
         if i%5 == 4:
-            test_data[test_counter][j] = resultant_vector(all_data[i][j][9], all_data[i][j][10], all_data[i][j][11])
+            test_data[test_counter][j] = resultant_vector(all_data[i][j][0], all_data[i][j][1], all_data[i][j][2])
             test_labels[test_counter] = all_labels[i]
             #print("test", test_data[test_counter][j])
         else:
-            train_data[train_counter][j] = resultant_vector(all_data[i][j][9], all_data[i][j][10], all_data[i][j][11])
+            train_data[train_counter][j] = resultant_vector(all_data[i][j][0], all_data[i][j][1], all_data[i][j][2])
             train_labels[train_counter] = all_labels[i]
             #print("train", train_data[train_counter][j])
     if i%5 == 4:
@@ -75,9 +126,9 @@ test_data = normalize(test_data, norm='l2', copy=False)
 print(test_counter, " test samples recorded")
 print(train_counter, " train counters recorded")
 print(len(train_data[0]), " samples per segment")
-print("train_data[287][369]", train_data[287][369])
+print("last train_data val ", train_data[num_train-1][SAMPLE_LENGTH-1])
 
-np.savetxt("raw_train_data_1d.csv", train_data, delimiter=',')
-np.savetxt("raw_train_labels_1d.csv", train_labels, delimiter=',')
-np.savetxt("raw_test_data_1d.csv", test_data, delimiter=',')
-np.savetxt("raw_test_labels_1d.csv", test_labels, delimiter=',')
+np.savetxt("short_train_data_1d.csv", train_data, delimiter=',')
+np.savetxt("short_train_labels_1d.csv", train_labels, delimiter=',')
+np.savetxt("short_test_data_1d.csv", test_data, delimiter=',')
+np.savetxt("short_test_labels_1d.csv", test_labels, delimiter=',')
