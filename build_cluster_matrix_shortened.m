@@ -7,19 +7,14 @@ for i=1:22925
     cluster_matrix(l, c) =  cluster_matrix(l, c) + 1;
 end
 
-label_counts = [58, 58, 58, 58, 58, 58; 
-    38, 38, 38, 38, 38, 38; 
-    39, 39, 39, 39, 39, 39; 
-    38, 38, 38, 38, 38, 38; 
-    58, 58, 58, 58, 58, 58; 
-    57, 57, 57, 57, 57, 57];
 
-%The percentage of each label in a cluster
-cluster_percentages = cluster_matrix ./ label_counts;
 
 c_c = zeros(6,1);
+l_c = zeros(6,1);
+
 for i = 1:22925
    c_c(clusters(i)) = c_c(clusters(i)) + 1;
+   l_c(rawtrainlabels1d(i)) = l_c(rawtrainlabels1d(i)) + 1;
 end
 
 for i = 2:22925
@@ -35,8 +30,18 @@ cluster_count_array = [c_c(1), c_c(2), c_c(3), c_c(4), c_c(5), c_c(6);
     c_c(1), c_c(2), c_c(3), c_c(4), c_c(5), c_c(6);
     c_c(1), c_c(2), c_c(3), c_c(4), c_c(5), c_c(6);];
 
+label_counts = [l_c(1), l_c(2), l_c(3), l_c(4), l_c(5), l_c(6);
+    l_c(1), l_c(2), l_c(3), l_c(4), l_c(5), l_c(6);
+    l_c(1), l_c(2), l_c(3), l_c(4), l_c(5), l_c(6);
+    l_c(1), l_c(2), l_c(3), l_c(4), l_c(5), l_c(6);
+    l_c(1), l_c(2), l_c(3), l_c(4), l_c(5), l_c(6);
+    l_c(1), l_c(2), l_c(3), l_c(4), l_c(5), l_c(6);];
+
 %The percentage of each cluster composed of a label
 label_percentage = cluster_matrix ./ cluster_count_array;
+
+%The percentage of each label in a cluster
+cluster_percentages = cluster_matrix ./ label_counts;
 
 range = 1:1:50;
 figure(1);

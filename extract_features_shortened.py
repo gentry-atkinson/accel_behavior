@@ -75,74 +75,74 @@ def build_AE(train_set):
 
     print("Compiling model.......................")
     autoenc = Model(inp, dec)
-    autoenc.compile(optimizer='RMSprop', loss='mean_squared_error', metrics=[])
+    autoenc.compile(optimizer='RMSprop', loss='mean_squared_error', metrics=['acc'])
 
     autoenc.summary()
     return autoenc
 
 
-def read_files():
-    #splitting data 80/20 eventually
-    all_data = np.zeros((360, 370, 12), dtype='float')
-    all_labels = np.zeros((360), dtype='int')
-
-    directory_num = 0
-
-    print("Loading from: ", len(DIRECTORIES), " directories")
-
-    for directory in DIRECTORIES:
-        print("Reading ", directory)
-        filepath = "motionsense-dataset/A_DeviceMotion_data/" + directory + "/"
-        for i in range (1, 25):
-            #print("Subject: ", i, " has offset ", directory_num, ". Index is ", i+directory_num-1)
-            filename = filepath + "sub_" + str(i) +".csv"
-            f = open(filename, 'r')
-            f_lines = f.readlines()
-            for j in range(1, 371):
-                values = f_lines[j].split(',')
-                for k in range(1, 13):
-                    all_data[i+directory_num-1][j-1][k-1] = values[k]
-            if "dws" in directory:
-                all_labels[i+directory_num-1] = 0
-            elif "jog" in directory:
-                all_labels[i+directory_num-1] = 1
-            elif "sit" in directory:
-                all_labels[i+directory_num-1] = 2
-            elif "std" in directory:
-                all_labels[i+directory_num-1] = 3
-            elif "ups" in directory:
-                all_labels[i+directory_num-1] = 4
-            elif "wlk" in directory:
-                all_labels[i+directory_num-1] = 5
-            else:
-                print("Bad directory name in read_files()")
-        directory_num += 24
-
-    train_data = np.zeros((288, 370, 12), dtype='float')
-    train_labels = np.zeros((288), dtype='int')
-    test_data = np.zeros((72, 370, 12), dtype='float')
-    test_labels = np.zeros((72), dtype='int')
-
-    test_counter = 0;
-    train_counter = 0;
-
-    for i in range(360):
-        for j in range(370):
-            for k in range(12):
-                if i%5 == 4:
-                    test_data[test_counter][j][k] = all_data[i][j][k]
-                    test_labels[test_counter] = all_labels[i]
-                else:
-                    train_data[test_counter][j][k] = all_data[i][j][k]
-                    train_labels[train_counter] = all_labels[i]
-        if i%5 == 4:
-            test_counter += 1
-        else:
-            train_counter += 1
-
-    print(test_counter, " test samples recorded")
-    print(train_counter, " train counters recorded")
-    return train_data, train_labels, test_data, test_labels
+# def read_files():
+#     #splitting data 80/20 eventually
+#     all_data = np.zeros((360, 370, 12), dtype='float')
+#     all_labels = np.zeros((360), dtype='int')
+#
+#     directory_num = 0
+#
+#     print("Loading from: ", len(DIRECTORIES), " directories")
+#
+#     for directory in DIRECTORIES:
+#         print("Reading ", directory)
+#         filepath = "motionsense-dataset/A_DeviceMotion_data/" + directory + "/"
+#         for i in range (1, 25):
+#             #print("Subject: ", i, " has offset ", directory_num, ". Index is ", i+directory_num-1)
+#             filename = filepath + "sub_" + str(i) +".csv"
+#             f = open(filename, 'r')
+#             f_lines = f.readlines()
+#             for j in range(1, 371):
+#                 values = f_lines[j].split(',')
+#                 for k in range(1, 13):
+#                     all_data[i+directory_num-1][j-1][k-1] = values[k]
+#             if "dws" in directory:
+#                 all_labels[i+directory_num-1] = 0
+#             elif "jog" in directory:
+#                 all_labels[i+directory_num-1] = 1
+#             elif "sit" in directory:
+#                 all_labels[i+directory_num-1] = 2
+#             elif "std" in directory:
+#                 all_labels[i+directory_num-1] = 3
+#             elif "ups" in directory:
+#                 all_labels[i+directory_num-1] = 4
+#             elif "wlk" in directory:
+#                 all_labels[i+directory_num-1] = 5
+#             else:
+#                 print("Bad directory name in read_files()")
+#         directory_num += 24
+#
+#     train_data = np.zeros((288, 370, 12), dtype='float')
+#     train_labels = np.zeros((288), dtype='int')
+#     test_data = np.zeros((72, 370, 12), dtype='float')
+#     test_labels = np.zeros((72), dtype='int')
+#
+#     test_counter = 0;
+#     train_counter = 0;
+#
+#     for i in range(360):
+#         for j in range(370):
+#             for k in range(12):
+#                 if i%5 == 4:
+#                     test_data[test_counter][j][k] = all_data[i][j][k]
+#                     test_labels[test_counter] = all_labels[i]
+#                 else:
+#                     train_data[test_counter][j][k] = all_data[i][j][k]
+#                     train_labels[train_counter] = all_labels[i]
+#         if i%5 == 4:
+#             test_counter += 1
+#         else:
+#             train_counter += 1
+#
+#     print(test_counter, " test samples recorded")
+#     print(train_counter, " train counters recorded")
+#     return train_data, train_labels, test_data, test_labels
 
 def read_files_1d():
     train_data = np.loadtxt("short_train_data_1d.csv", delimiter=',')
