@@ -3,8 +3,11 @@ import math
 from sklearn.preprocessing import normalize
 
 DIRECTORIES = ["dws_1", "dws_2", "dws_11", "jog_9", "jog_16", "sit_5", "sit_13", "std_6", "std_14", "ups_3", "ups_4", "ups_12", "wlk_7", "wlk_8", "wlk_15"]
+SAMPLE_RATE_IN_HERTZ = 50
+SAMPLE_LENGTH_IN_SECONDS = 1
+SAMPLE_LENGTH = SAMPLE_RATE_IN_HERTZ * SAMPLE_LENGTH_IN_SECONDS
+
 array_size = 10000
-SAMPLE_LENGTH = 50
 num_samples = 0
 
 def resultant_vector(x_axis, y_axis, z_axis):
