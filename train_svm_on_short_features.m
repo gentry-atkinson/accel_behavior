@@ -9,3 +9,6 @@ feat_error = kfoldLoss(feat_cv)
 
 fprintf("Train on raw data: %d percent accuracy\n", 1-raw_error)
 fprintf("Train on extracted features: %d percent accuracy\n", 1-feat_error)
+
+[validationPredictions, validationScores] = kfoldPredict(feat_cv);
+confmat=confusionmat(rawtrainlabels1d(:,1),validationPredictions);

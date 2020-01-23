@@ -145,10 +145,10 @@ def build_AE(train_set):
 #     return train_data, train_labels, test_data, test_labels
 
 def read_files_1d():
-    train_data = np.loadtxt("short_train_data_1d.csv", delimiter=',')
-    train_labels = np.loadtxt("short_train_labels_1d.csv", delimiter=',')
-    test_data = np.loadtxt("short_test_data_1d.csv", delimiter=',')
-    test_labels = np.loadtxt("short_test_labels_1d.csv", delimiter=',')
+    train_data = np.loadtxt("mHealth_train_data_1d.csv", delimiter=',')
+    train_labels = np.loadtxt("mHealth_train_labels_1d.csv", delimiter=',')
+    test_data = np.loadtxt("mHealth_test_data_1d.csv", delimiter=',')
+    test_labels = np.loadtxt("mHealth_test_labels_1d.csv", delimiter=',')
     return train_data, train_labels, test_data, test_labels
 
 def train_AE(autoenc, train_set):
