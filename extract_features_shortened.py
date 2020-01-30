@@ -1,6 +1,7 @@
 #### TODO:
 #       1)only take raw accel input
 #       2)visualize decoded dataset
+#       3)update for Tensorflow 2
 
 ##############################################
 #Author:    Gentry Atkinson
