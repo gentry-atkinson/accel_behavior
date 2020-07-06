@@ -1,6 +1,6 @@
 decodeddata_table = readtable("decoded_data.csv", 'HeaderLines', 0, 'ReadVariableNames', false);
-rawtraindata1d_table = readtable("short_train_data_1d.csv", 'HeaderLines', 0, 'ReadVariableNames', false);
-rawtrainlabels1d_table = readtable("short_train_labels_1d.csv", 'HeaderLines', 0, 'ReadVariableNames', false);
+rawtraindata1d_table = readtable("mHealth_train_data_1d.csv", 'HeaderLines', 0, 'ReadVariableNames', false);
+rawtrainlabels1d_table = readtable("mHealth_train_labels_1d.csv", 'HeaderLines', 0, 'ReadVariableNames', false);
 trainingdata_table = readtable("training_data.csv", 'HeaderLines', 0, 'ReadVariableNames', false);
 
 decodeddata = decodeddata_table{:,:};

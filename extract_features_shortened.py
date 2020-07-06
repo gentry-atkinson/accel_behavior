@@ -8,19 +8,19 @@
 #Date:      6 November 2019
 ##############################################
 
-import keras
+import tensorflow.keras as keras
 from matplotlib import pyplot
 import numpy as np
 
-from keras.layers import Input, Conv1D, AveragePooling1D, GlobalMaxPooling1D, GlobalAveragePooling1D, MaxPooling1D, UpSampling1D, Dense, Reshape, Flatten
-from keras.models import Model
-from keras.optimizers import RMSprop
+from tensorflow.keras.layers import Input, Conv1D, AveragePooling1D, GlobalMaxPooling1D, GlobalAveragePooling1D, MaxPooling1D, UpSampling1D, Dense, Reshape, Flatten
+from tensorflow.keras.models import Model
+from tensorflow.keras.optimizers import RMSprop
 
-import keras.backend as K
-from keras.layers import Conv2DTranspose, Lambda, BatchNormalization
+import tensorflow.keras.backend as K
+from tensorflow.keras.layers import Conv2DTranspose, Lambda, BatchNormalization
 
 DIRECTORIES = ["dws_1", "dws_2", "dws_11", "jog_9", "jog_16", "sit_5", "sit_13", "std_6", "std_14", "ups_3", "ups_4", "ups_12", "wlk_7", "wlk_8", "wlk_15"]
-NUMBER_EPOCHS = 5
+NUMBER_EPOCHS = 3
 SAMPLE_RATE_IN_HERTZ = 50
 SAMPLE_LENGTH_IN_SECONDS = 1
 SAMPLE_LENGTH = SAMPLE_RATE_IN_HERTZ * SAMPLE_LENGTH_IN_SECONDS
@@ -145,10 +145,10 @@ def build_AE(train_set):
 #     return train_data, train_labels, test_data, test_labels
 
 def read_files_1d():
-    train_data = np.loadtxt("short_train_data_1d.csv", delimiter=',')
-    train_labels = np.loadtxt("short_train_labels_1d.csv", delimiter=',')
-    test_data = np.loadtxt("short_test_data_1d.csv", delimiter=',')
-    test_labels = np.loadtxt("short_test_labels_1d.csv", delimiter=',')
+    train_data = np.loadtxt("mHealth_train_data_1d.csv", delimiter=',')
+    train_labels = np.loadtxt("mHealth_train_labels_1d.csv", delimiter=',')
+    test_data = np.loadtxt("mHealth_test_data_1d.csv", delimiter=',')
+    test_labels = np.loadtxt("mHealth_test_labels_1d.csv", delimiter=',')
     return train_data, train_labels, test_data, test_labels
 
 def train_AE(autoenc, train_set):
@@ -167,7 +167,7 @@ def test_AE(model, test_set):
 def trim_decoder(autoenc):
     print("Removing decoder from autoencoder....")
     o = autoenc.layers[-7].output
-    encoder = Model(input=autoenc.input, output=[o])
+    encoder = Model(autoenc.inputs, outputs=[o])
     encoder.summary()
     return encoder
 
